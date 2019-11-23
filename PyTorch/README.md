@@ -1,4 +1,14 @@
 
+#### Installation (in docker)
+To streamline installation instructions below, Dockerfile is provided to get the network run inside dockercontainer:
+
+`docker build -t pwcnet:p27 .`
+
+#### Test (in docker)
+For a EAI workstation and assuming current directory is the root of the repository:
+
+``docker run --runtime=nvidia  --rm -i -v `pwd`:/app -u `id -u`:`id -g` pwcnet:p27 python script_pwc.py './data/frame_0010.png' './data/frame_0011.png' './tmp/frame_0010.flo'``
+
 #### Installation
 The code was developed using Python 2.7 & PyTorch 0.2 & CUDA 8.0. There may be a problem related to software versions. To fix the problem, you may look at the implementation in PWCNet.py and replace the syntax to match the new pytorch environment. 
 Install correlation package (if you haven't installed this package before):
