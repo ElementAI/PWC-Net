@@ -12,7 +12,7 @@ headers += ['correlation_package/src/corr1d.h']
 defines = []
 with_cuda = False
 
-if torch.cuda.is_available():
+if torch.cuda.is_available() or 'FORCE_CUDA' in os.environ:
     print('Including CUDA code.')
     sources += ['correlation_package/src/corr_cuda.c']
     headers += ['correlation_package/src/corr_cuda.h']
