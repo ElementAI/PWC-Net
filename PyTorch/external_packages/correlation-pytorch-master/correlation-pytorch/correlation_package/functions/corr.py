@@ -1,6 +1,6 @@
 import torch
 from torch.autograd import Function
-from .._ext import corr
+import _correlation_package_cpp
 
 class correlation(Function):
 
@@ -21,7 +21,7 @@ class correlation(Function):
         rbot2 = input2.new()
         output = input1.new()
 
-        corr.corr_cuda_forward(input1, input2,
+        _correlation_package_cpp.corr_cuda_forward(input1, input2,
                                rbot1, rbot2,
                                output,
                                self.pad_size,
@@ -43,7 +43,7 @@ class correlation(Function):
         grad_input1 = torch.zeros(input1.size()).cuda()
         grad_input2 = torch.zeros(input2.size()).cuda()
 
-        corr.corr_cuda_backward(input1, input2,
+        _correlation_package_cpp.corr_cuda_backward(input1, input2,
                                 rbot1, rbot2,
                                 grad_output,
                                 grad_input1,
@@ -79,7 +79,7 @@ class correlation1d(Function):
         rbot2 = input2.new()
         output = input1.new()
 
-        corr.corr1d_cuda_forward(input1, input2,
+        _correlation_package_cpp.corr1d_cuda_forward(input1, input2,
                                rbot1, rbot2,
                                output,
                                self.pad_size,
@@ -104,7 +104,7 @@ class correlation1d(Function):
         #grad_input1 = grad_output.new()
         #grad_input2 = grad_output.new()
 
-        corr.corr1d_cuda_backward(input1, input2,
+        _correlation_package_cpp.corr1d_cuda_backward(input1, input2,
                                 rbot1, rbot2,
                                 grad_output,
                                 grad_input1,

@@ -1,13 +1,30 @@
-FROM nvidia/cuda:8.0-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-devel-ubuntu18.04
 
-RUN apt-get update && apt-get install -y libglib2.0-0 python-pip
+# Install native dependences
+RUN apt-get update && apt-get install -y curl \
+    build-essential git libreadline-dev zlib1g-dev libssl-dev \
+    libbz2-dev libsqlite3-dev libffi-dev libglib2.0-0
+
+# Install pyenv
+WORKDIR /srv/app
+ENV PYENV_ROOT /srv/app/.pyenv
+RUN git clone git://github.com/yyuu/pyenv.git $PYENV_ROOT
+ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+
+# Install python
+RUN pyenv install 3.7.3 
+RUN pyenv global 3.7.3
+ENV PATH $PYENV_ROOT/versions/3.7.3/bin:$PATH
 RUN pip install --upgrade pip
 
-RUN pip install numpy==1.14 http://download.pytorch.org/whl/cu80/torch-0.2.0.post3-cp27-cp27mu-manylinux1_x86_64.whl
-RUN pip install scipy==1.2.2 torchvision==0.2.0 visdom==0.1.8 dominate==2.4.0 opencv-python-headless==4.1.2.30 cffi==1.13.2
+# CUDA 10.0
+RUN pip install torch==1.2.0 torchvision==0.4.0 -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip install visdom dominate opencv-python-headless
 
 COPY ./external_packages /external_packages
 ENV FORCE_CUDA TRUE
-WORKDIR /external_packages/correlation-pytorch-master/
-RUN bash ./make_cuda.sh
+WORKDIR /external_packages/correlation-pytorch-master/correlation-pytorch
+RUN python setup.py build install
 WORKDIR /app
+
+RUN pip install pytest
